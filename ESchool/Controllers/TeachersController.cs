@@ -51,6 +51,14 @@ namespace ESchool.Controllers
                 return BadRequest();
             }
 
+            // Obtain a reference to the teacher to be updated
+            Teacher teacherToBeUpdated = _context.Teachers.Find(id);
+            
+            // Change only properties that are not null
+            if (teacher.FirstName != null)teacherToBeUpdated.FirstName = teacher.FirstName;
+            if (teacher.LastName != null) teacherToBeUpdated.LastName = teacher.LastName;
+
+            
             _context.Entry(teacher).State = EntityState.Modified;
 
             try
@@ -105,11 +113,26 @@ namespace ESchool.Controllers
         }
 
         // GET: api/teachers?firstName=firstNameVal&lastName=lastNameVal
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Teacher>>> GetTeacherWithFilters([FromQuery] string firstName, [FromQuery] string lastName)
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Teacher>>> GetTeacherWithFilters(
+        //[FromQuery] 
+        //string firstName, 
+        //[FromQuery] 
+        //string lastName)
+        //{
+        //    return await _context.Teachers
+        //        .Where(t => t.FirstName == firstName && t.LastName == lastName).ToListAsync();
+        //}
+
+        // GET: api/Teachers/{id}/Courses
+        [HttpGet("{id}/courses")]
+        public async Task<ActionResult<IEnumerable<CourseTeacher>>> GetCoursesForSpecificTeacher(long id)
         {
-            return await _context.Teachers
-                .Where(t => t.FirstName == firstName && t.LastName == lastName).ToListAsync();
+            return await _context.CourseTeachers
+                .Where(ct => ct.AssignedTeacher.Id == id)
+                .Include(ct => ct.AssignedCourse)
+                .Include(ct => ct.AssignedTeacher)
+                .ToListAsync();
         }
     }
 }
