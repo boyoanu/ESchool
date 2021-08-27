@@ -10,7 +10,7 @@ namespace ESchool.Model
     public class ESchoolContext:DbContext
     {
         public ESchoolContext(DbContextOptions<ESchoolContext> options)
-           : base(options)
+           :base(options)
         {
         }
 
